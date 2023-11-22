@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=3 uid="uid://dbingj3a1wxfr"]
+
+[ext_resource type="Script" path="res://scripts/PlayerMovement.gd" id="1_1ljdq"]
+[ext_resource type="Script" path="res://health.gd" id="2_16q2c"]
+[ext_resource type="Texture2D" uid="uid://3w7sguh2le76" path="res://wizard_cat-Sheet.png" id="3_eppg1"]
+[ext_resource type="Script" path="res://animate_sprite.gd" id="4_c0tlc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o1evi"]
+custom_solver_bias = 1.0
+radius = 73.01
+
+[sub_resource type="GDScript" id="GDScript_f1kh1"]
+script/source = "extends Node
+
+func Death():
+	pass
+"
+
+[sub_resource type="Theme" id="Theme_yu4nn"]
+default_base_scale = 1.01
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 11
+script = ExtResource("1_1ljdq")
+
+[node name="HurtBox" type="CollisionShape2D" parent="."]
+scale = Vector2(0.16, 0.16)
+shape = SubResource("CircleShape2D_o1evi")
+one_way_collision_margin = 0.0
+script = ExtResource("2_16q2c")
+
+[node name="Death" type="Node" parent="HurtBox"]
+script = SubResource("GDScript_f1kh1")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+texture_filter = 1
+texture_repeat = 1
+scale = Vector2(0.378885, 0.378885)
+zoom = Vector2(5, 5)
+
+[node name="SpeedText" type="Label" parent="Camera2D"]
+visible = false
+offset_left = -578.0
+offset_top = -326.0
+offset_right = -3.0
+offset_bottom = -3.0
+theme = SubResource("Theme_yu4nn")
+theme_override_font_sizes/font_size = 100
+text = "TEXT"
+metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -5)
+texture = ExtResource("3_eppg1")
+hframes = 2
+script = ExtResource("4_c0tlc")
+
+[node name="AnimationTimer" type="Timer" parent="Sprite2D"]
+wait_time = 0.15
+autostart = true
+
+[node name="SwipeTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="KBTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="on_idle" from="Sprite2D" to="Sprite2D" method="_on_on_idle"]
+[connection signal="on_kb" from="Sprite2D" to="Sprite2D" method="_on_on_kb"]
+[connection signal="on_run" from="Sprite2D" to="Sprite2D" method="_on_on_run"]
+[connection signal="timeout" from="Sprite2D/AnimationTimer" to="Sprite2D" method="_on_animation_timer_timeout"]
+[connection signal="timeout" from="SwipeTimer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="KBTimer" to="." method="_on_kb_timer_timeout"]

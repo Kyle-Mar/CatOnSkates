@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://wjhi8r21w3eg"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_gn5o7"]
+[ext_resource type="Texture2D" uid="uid://cmcfy57biccrj" path="res://sprites/goo-dog.png" id="2_dwm1l"]
+[ext_resource type="Script" path="res://scripts/health.gd" id="3_s6g2e"]
+[ext_resource type="Script" path="res://scripts/enemy_death.gd" id="4_5rrer"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qk8ca"]
+radius = 6.08276
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_58y06"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2a58c"]
+radius = 3.5
+
+[node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 2
+floor_stop_on_slope = false
+floor_constant_speed = true
+floor_block_on_wall = false
+safe_margin = 0.036
+script = ExtResource("1_gn5o7")
+
+[node name="FireTimer" type="Timer" parent="."]
+wait_time = 2.5
+autostart = true
+
+[node name="KBTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[node name="CollisionTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.90735e-06, 1.90735e-06)
+texture = ExtResource("2_dwm1l")
+
+[node name="Health" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 2)
+shape = SubResource("CircleShape2D_qk8ca")
+script = ExtResource("3_s6g2e")
+MAX_HEALTH = 3
+health = 3
+
+[node name="Death" type="Node" parent="Health"]
+script = ExtResource("4_5rrer")
+
+[node name="Area2D" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_58y06")
+
+[node name="FirePoint" type="Node2D" parent="."]
+position = Vector2(6, 0)
+
+[node name="RayCast2D" type="ShapeCast2D" parent="."]
+shape = SubResource("CircleShape2D_2a58c")
+target_position = Vector2(50, 0)
+collision_mask = 2
+collide_with_areas = true
+
+[connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]
+[connection signal="timeout" from="KBTimer" to="." method="_on_kb_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

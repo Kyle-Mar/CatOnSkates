@@ -1,0 +1,95 @@
+[gd_scene load_steps=12 format=3 uid="uid://2acosorumjiw"]
+
+[ext_resource type="Texture2D" uid="uid://dgwlf2f7seie4" path="res://icon.svg" id="1_yve1l"]
+[ext_resource type="Script" path="res://scripts/minimum_path.gd" id="2_cilq5"]
+[ext_resource type="Texture2D" uid="uid://m72tg2n3blnq" path="res://headshot.jpg" id="3_ce56l"]
+[ext_resource type="Script" path="res://addons/wfc/nodes/generator_2d.gd" id="4_sk3us"]
+[ext_resource type="TileSet" uid="uid://dsv4yka0sywjk" path="res://Tilemap/IceSet.tres" id="5_bprev"]
+[ext_resource type="Script" path="res://scripts/PlayerMovement.gd" id="5_kpchf"]
+[ext_resource type="Script" path="res://target.gd" id="5_qpor2"]
+[ext_resource type="Script" path="res://astar.gd" id="6_o7oa7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o1evi"]
+custom_solver_bias = 1.0
+radius = 73.01
+
+[sub_resource type="Theme" id="Theme_yu4nn"]
+default_base_scale = 1.01
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n3a2s"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Headshot" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-382, -30)
+texture = ExtResource("3_ce56l")
+
+[node name="Map Generation" type="Node" parent="."]
+
+[node name="MinimumPath" type="Node" parent="Map Generation"]
+script = ExtResource("2_cilq5")
+target_tilemap = NodePath("../../target")
+start_on_ready = null
+bounds = Vector2i(10, 30)
+
+[node name="WFC" type="Node" parent="Map Generation"]
+script = ExtResource("4_sk3us")
+target = NodePath("../../target")
+rect = Rect2i(0, 0, 100, 100)
+
+[node name="target" type="TileMap" parent="."]
+tile_set = ExtResource("5_bprev")
+format = 2
+script = ExtResource("5_qpor2")
+
+[node name="Pathfinding" type="Node2D" parent="target"]
+script = ExtResource("6_o7oa7")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." groups=["player"]]
+visible = false
+script = ExtResource("5_kpchf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+scale = Vector2(0.16, 0.16)
+shape = SubResource("CircleShape2D_o1evi")
+one_way_collision_margin = 0.0
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+texture_filter = 1
+texture_repeat = 1
+scale = Vector2(0.378885, 0.378885)
+zoom = Vector2(5, 5)
+
+[node name="SpeedText" type="Label" parent="CharacterBody2D/Camera2D"]
+visible = false
+offset_left = -578.0
+offset_top = -326.0
+offset_right = -3.0
+offset_bottom = -3.0
+theme = SubResource("Theme_yu4nn")
+theme_override_font_sizes/font_size = 100
+text = "TEXT"
+metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+scale = Vector2(0.16, 0.16)
+texture = ExtResource("1_yve1l")
+
+[node name="Timer" type="Timer" parent="CharacterBody2D"]
+wait_time = 0.1
+one_shot = true
+
+[node name="Enemy" type="CharacterBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
+shape = SubResource("RectangleShape2D_n3a2s")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemy"]
+position = Vector2(1.90735e-06, 1.90735e-06)
+scale = Vector2(0.15625, 0.15625)
+texture = ExtResource("1_yve1l")
+
+[connection signal="minimum_path_done" from="Map Generation/MinimumPath" to="Map Generation/WFC" method="_on_minimum_path_done"]
+[connection signal="player_position_picked" from="Map Generation/MinimumPath" to="CharacterBody2D" method="_on_minimum_path_player_position_picked"]
+[connection signal="timeout" from="CharacterBody2D/Timer" to="CharacterBody2D" method="_on_timer_timeout"]
