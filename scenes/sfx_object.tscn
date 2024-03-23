@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://shxfu3svpgr8"]
+
+[ext_resource type="Script" path="res://scripts/SFXObject.gd" id="1_sp3ch"]
+
+[node name="SFXObject" type="AudioStreamPlayer"]
+autoplay = true
+script = ExtResource("1_sp3ch")
+
+[connection signal="finished" from="." to="." method="_on_finished"]

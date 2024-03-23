@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0nxxkxs0h2wh"]
+
+[ext_resource type="Texture2D" uid="uid://c4roikxe3k3so" path="res://cat_run_1.png" id="1_wheum"]
+[ext_resource type="Texture2D" uid="uid://57m32cix74tj" path="res://cat_run_2.png" id="2_nphjg"]
+[ext_resource type="Script" path="res://cat_menu_anim.gd" id="3_os4s5"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_g605b"]
+frames = 2
+frame_0/texture = ExtResource("1_wheum")
+frame_0/duration = 0.1
+frame_1/texture = ExtResource("2_nphjg")
+frame_1/duration = 0.1
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Animations" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TextureRect" type="TextureRect" parent="Animations"]
+layout_mode = 0
+offset_left = 551.0
+offset_top = -149.0
+offset_right = 567.0
+offset_bottom = -118.0
+scale = Vector2(6, 6)
+texture = SubResource("AnimatedTexture_g605b")
+script = ExtResource("3_os4s5")

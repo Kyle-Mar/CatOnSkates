@@ -7,12 +7,16 @@ var input_positions = []
 @onready var KBTimer = $KBTimer
 @onready var HurtBox = $HurtBox
 
-var box: PackedScene = preload("res://scenes/box.tscn")
+
+@onready var twongle = preload("res://audio/sfx/twongle.wav")
+@onready var sfx = preload("res://scenes/sfx_object.tscn")
 
 var is_kb = false
 var kb_direction = Vector2.ZERO
 var next_init_player_position = null
-var can_move = 2
+var can_move = 0
+
+var window_size
 
 # Called when the node enters the scene tree for the first time.
 func _init():
@@ -24,7 +28,7 @@ func _init():
 func _ready():
 	PlayerInfo.position = position
 	PlayerInfo.global_position = global_position
-	
+	window_size = get_tree().root.get_viewport().size
 	pass # Replace with function body.
 
 func _on_door_entered():
@@ -34,7 +38,6 @@ func _on_level_transition():
 	can_move -= 1
 
 func _on_level_transition_over():
-	print("GOOBLE", next_init_player_position)
 	if(next_init_player_position):
 		global_position = next_init_player_position
 
@@ -74,57 +77,75 @@ func flip_sprite():
 		$PlayerSprite.flip_h = true
 		$Staff.flip_h = true
 		$Staff.position.x *= -1
+		$Staff/PlayerFire.position.x *= -1
 	if velocity.x < 0 and $PlayerSprite.flip_h:
 		$PlayerSprite.flip_h = false
 		$Staff.flip_h = false
 		$Staff.position.x *= -1
+		$Staff/PlayerFire.position.x *= -1
 
 func flip_sprite_kb():
 	if -kb_direction.x > 0 and not $PlayerSprite.flip_h:
 		$PlayerSprite.flip_h = true
 		$Staff.flip_h = true
 		$Staff.position.x *= -1
+		$Staff/PlayerFire.position.x *= -1
 	if -kb_direction.x < 0 and $PlayerSprite.flip_h:
 		$PlayerSprite.flip_h = false
 		$Staff.flip_h = false
 		$Staff.position.x *= -1
+		$Staff/PlayerFire.position.x *= -1
 
 func damage(amount, direction):
 	if(KBTimer.is_stopped()):
 		KBTimer.start()
 		kb_direction = direction
 		is_kb = true
-	$HurtBox.damage(amount)
+		$HurtBox.damage(amount)
+		
+		var new = sfx.instantiate()
+		new.stream = twongle
+		_global.get_root_game().add_child.call_deferred(new)
+	
+func heal(amt):
+	$HurtBox.heal(amt)
 
 func _input(event):
 	if event is InputEventScreenDrag:
+		#text.text = str(event.position)
+		if input_positions.size() <= 0:
+			if event.global_position.x / _global.viewport.size.x <= 0.5:
+				input_positions.append(event.global_position)
+			else:
+				return
+		else:
+			input_positions.append(event.global_position)
 		if(swipe_timer):
 			swipe_timer.start()
-		#text.text = str(event.position)
-		input_positions.append(event.position)
 	if event is InputEventMouseMotion:
-		print("HELLO")
+		if input_positions.size() <= 0:
+			if event.position.x /_global.viewport.size.x <= 0.5:
+				input_positions.append(event.global_position)
+			else:
+				return
+		else:
+			input_positions.append(event.global_position)
 		if(swipe_timer):
 			swipe_timer.start()
-		#text.text = str(event.position)
-		input_positions.append(event.position)
-	elif event is InputEventKey:
-
-		var movx = Input.get_axis("neg_mov_x","pos_mov_x")	
-		var movy = Input.get_axis("pos_mov_y","neg_mov_y")
-		#if movx == 0 and movy ==0:
-		#	return
-		move_vec = Vector2(movx, movy)
-		move_vec = move_vec.normalized()
 
 func _on_timer_timeout():
 	if(len(input_positions) <2):
 		return
 	var rel = (input_positions[-1] - input_positions[0]).normalized()
+	
+	var new_vec:Vector2
 	if abs(rel.x) >= abs(rel.y):
-		move_vec = Vector2(1 * sign(rel.x),0)
+		new_vec = Vector2(1 * sign(rel.x),0)
 	elif abs(rel.x) < abs(rel.y):
-		move_vec = Vector2(0, 1 * sign(rel.y))
+		new_vec = Vector2(0, 1 * sign(rel.y))
+	if(new_vec.is_zero_approx()):
+		return
+	move_vec = new_vec
 	
 	input_positions.clear()
 

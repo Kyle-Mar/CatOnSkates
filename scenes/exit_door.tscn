@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://vqtuee73y0pt"]
 
-[ext_resource type="Texture2D" uid="uid://bq0hffct128bj" path="res://Tilemap/ExitDoor.png" id="1_b1ncr"]
+[ext_resource type="Texture2D" uid="uid://d0751x4djpsqh" path="res://Tilemap/exit-door-locked.png" id="1_wd4n7"]
 [ext_resource type="Script" path="res://scripts/exit_door.gd" id="2_yorgk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3el4e"]
 size = Vector2(27, 23)
 
 [node name="Sprite2D" type="Sprite2D"]
-texture = ExtResource("1_b1ncr")
+texture = ExtResource("1_wd4n7")
 script = ExtResource("2_yorgk")
 
 [node name="Area2D" type="Area2D" parent="."]

@@ -4,6 +4,9 @@ var touching_player = false
 @onready var fire_point = $FirePoint
 @onready var BULLET = preload("res://scenes/enemy_bullet.tscn")
 
+@onready var bark = preload("res://audio/sfx/notabark.wav")
+@onready var sfx = preload("res://scenes/sfx_object.tscn")
+
 var prev_velocity = Vector2.ZERO
 var prev_collision:KinematicCollision2D = null
 
@@ -11,6 +14,10 @@ var is_kb = false
 var kb_direction = Vector2.ZERO
 
 const SPEED = 50
+
+func _ready():
+	$FireTimer.wait_time = randf_range(2.25, 2.75)
+
 
 func _process(delta):
 	if is_kb:
@@ -20,10 +27,9 @@ func _process(delta):
 			is_kb = false
 		
 func move_to(pos, delta):
-	
+	$Label.text = str(velocity)
 	if is_kb:
 		return
-	
 	var init_vel = velocity
 	if (PlayerInfo.position - position).length() < 300:
 		$RayCast2D.target_position = to_local(PlayerInfo.position) - $RayCast2D.position 
@@ -36,15 +42,15 @@ func move_to(pos, delta):
 		
 		#####if too close run away!#####
 		if 45 > (PlayerInfo.position - position).length() && (PlayerInfo.position - position).length() >= 0 and not $RayCast2D.is_colliding():
-			velocity = lerp(init_vel, -(PlayerInfo.position - position).normalized() * SPEED * delta, 0.25)
+			velocity = init_vel.slerp(-(PlayerInfo.position - position).normalized() * SPEED * delta, 0.25)
 
 		#####if close enough stop#####
 		elif(PlayerInfo.position - position).length() < 50 and not $RayCast2D.is_colliding():
-			velocity = lerp(init_vel, Vector2.ZERO, 0.25)
+			velocity = init_vel.slerp(Vector2.ZERO, 0.25)
 			
 		######collision on corner fixer######
 		var collision = move_and_collide(velocity)
-		if(collision):
+		if collision and not collision.has_method("damage"):
 			#if $RayCast2D.is_colliding():
 			$CollisionTimer.start(0.1)
 			prev_collision = collision
@@ -64,7 +70,6 @@ func damage(amt, kb_dir):
 		$KBTimer.start()
 		is_kb = true
 		kb_direction = kb_dir
-		print(kb_direction)
 	$Health.damage(amt)
 	
 
@@ -73,6 +78,10 @@ func _on_area_2d_body_entered(body):
 
 
 func _on_fire_timer_timeout():
+	var new = sfx.instantiate()
+	new.stream = bark
+	_global.get_root_game().add_child.call_deferred(new)
+	
 	var bullet = BULLET.instantiate()
 	bullet.position = fire_point.global_position
 	bullet.SPEED += velocity.length()

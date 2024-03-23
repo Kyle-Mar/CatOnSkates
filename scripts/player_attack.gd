@@ -3,6 +3,9 @@ extends Node2D
 @export var player_sprite:AnimatedSprite2D
 @export var staff_sprite:AnimatedSprite2D
 
+@export var fwoosh = preload("res://audio/sfx/fwoosh.wav")
+@export var sfx_object = preload("res://scenes/sfx_object.tscn")
+
 var is_firing = false
 
 var nearby_enemies = []
@@ -15,12 +18,17 @@ func _process(delta):
 	pass
 
 func _input(event):
-	if not event is InputEventKey:
-		return
-		
-	if event.keycode != Key.KEY_SPACE or not event.is_pressed() or event.is_echo():
-		return
+	if event is InputEventScreenTouch:
+		if (event.position.x /_global.viewport.size.x) > 0.5:
+			fire_bullet()
+
+	if event is InputEventKey:
+		if event.keycode != Key.KEY_SPACE or not event.is_pressed() or event.is_echo():
+			return
+		fire_bullet()
+
 	
+func fire_bullet():
 	var closest_enemy = null
 	var closest_dist = INF
 	for enemy in nearby_enemies:
@@ -34,7 +42,7 @@ func _input(event):
 		staff_sprite.play("attack")
 		look_at_enemy(global_position - closest_enemy.position)
 		shoot_bullet(closest_enemy)
-
+	
 
 func look_at_enemy(vec_to_enemy):
 	if -vec_to_enemy.x > 0 and not player_sprite.flip_h:
@@ -44,14 +52,22 @@ func look_at_enemy(vec_to_enemy):
 	if -vec_to_enemy.x > 0 and not staff_sprite.flip_h:
 		staff_sprite.flip_h = true
 		staff_sprite.position.x *= -1
+		position.x *= -1
 	if -vec_to_enemy.x < 0 and staff_sprite.flip_h:
 		staff_sprite.flip_h = false	
 		staff_sprite.position.x *= -1
+		position.x *= -1
 
 func shoot_bullet(target):
+
 	if is_firing:
 		return
 	is_firing = true
+	#make sfx
+	var new = sfx_object.instantiate()
+	new.stream = fwoosh
+	_global.get_root_game().add_child.call_deferred(new)
+	#make bullet :)
 	var _bullet = bullet.instantiate()
 	_bullet.position = global_position
 	_global.get_root_game().add_child.call_deferred(_bullet)
@@ -68,5 +84,4 @@ func _on_fire_zone_body_exited(body):
 
 func _on_staff_animation_looped():
 	is_firing = false
-	print("done_firing")
 	staff_sprite.pause()

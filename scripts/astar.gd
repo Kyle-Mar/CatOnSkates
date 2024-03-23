@@ -16,7 +16,6 @@ func _on_initialize():
 	astargrid.cell_size = Vector2i(16,20)
 	astargrid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astargrid.update()
-	print("INITIALIZED")
 
 func _process(delta):
 	if tilemap == null:
@@ -50,6 +49,9 @@ func _process(delta):
 
 
 func get_next_point(start, end):
+	if not end:
+		return []
+	
 	var path = astargrid.get_id_path(
 		tilemap.local_to_map(start),
 		tilemap.local_to_map(end)

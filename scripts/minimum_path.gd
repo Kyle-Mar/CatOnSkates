@@ -91,8 +91,8 @@ func start():
 				if target_node.get_cell_atlas_coords(0, Vector2i(j,i-1)) == TOP_WALL:
 					target_node.set_cell(0, Vector2i(j,i), 4, WALK_PATH_SHAD)
 				
+	EventBus.floor_list_done.emit(floor_list)
 	EventBus.player_position_picked.emit(get_player_position())
-	
 	
 
 	#minimum_path_done.emit()

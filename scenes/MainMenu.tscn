@@ -1,0 +1,188 @@
+[gd_scene load_steps=13 format=3 uid="uid://c0nxxkxs0h2wh"]
+
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1_t5bcs"]
+[ext_resource type="Texture2D" uid="uid://c4roikxe3k3so" path="res://sprites/cat_run_1.png" id="1_wheum"]
+[ext_resource type="Texture2D" uid="uid://57m32cix74tj" path="res://sprites/cat_run_2.png" id="2_nphjg"]
+[ext_resource type="Script" path="res://scenes/AnimationPlayer.gd" id="2_xbagp"]
+[ext_resource type="Texture2D" uid="uid://cmcfy57biccrj" path="res://sprites/goo-dog.png" id="4_ucc6g"]
+[ext_resource type="Texture2D" uid="uid://c4v7x157skaim" path="res://sprites/background.png" id="5_vq7n5"]
+[ext_resource type="Texture2D" uid="uid://bsf74l7w5y6fh" path="res://sprites/foreground.png" id="6_xqy1h"]
+[ext_resource type="Texture2D" uid="uid://bkjcoj00hpre6" path="res://sprites/title.png" id="7_fnbq5"]
+[ext_resource type="Texture2D" uid="uid://d2sdbgnb3mtdn" path="res://sprites/ttp.png" id="8_btlpm"]
+
+[sub_resource type="Animation" id="Animation_fr3rw"]
+resource_name = "menu_anim_cat"
+length = 6.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../TextureRect:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1000, -149), Vector2(-1000, -149), Vector2(1000, -149)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../TextureRect:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(900, -56), Vector2(-1100, -56), Vector2(900, -56)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:flip_h")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../TextureRect4:rotation")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.5, 3, 4.5, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.0523599, -0.0523599, -0.0523599, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../TextureRect4:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -10), Vector2(0, 10), Vector2(0, -10)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../../TextureRect4:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7kk4e"]
+_data = {
+"menu_anim_cat": SubResource("Animation_fr3rw")
+}
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_g605b"]
+frames = 2
+frame_0/texture = ExtResource("1_wheum")
+frame_0/duration = 0.1
+frame_1/texture = ExtResource("2_nphjg")
+frame_1/duration = 0.1
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t5bcs")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Animations/TextureRect2")
+libraries = {
+"": SubResource("AnimationLibrary_7kk4e")
+}
+script = ExtResource("2_xbagp")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 721.0
+texture = ExtResource("5_vq7n5")
+
+[node name="Animations" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TextureRect" type="TextureRect" parent="Animations"]
+layout_mode = 0
+offset_left = 192.973
+offset_top = -149.0
+offset_right = 208.973
+offset_bottom = -118.0
+scale = Vector2(6, 6)
+texture = SubResource("AnimatedTexture_g605b")
+flip_h = true
+
+[node name="TextureRect2" type="TextureRect" parent="Animations"]
+layout_mode = 0
+offset_left = 92.9727
+offset_top = -56.0
+offset_right = 108.973
+offset_bottom = -40.0
+scale = Vector2(6, 6)
+texture = ExtResource("4_ucc6g")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 721.0
+texture = ExtResource("6_xqy1h")
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 721.0
+texture = ExtResource("7_fnbq5")
+
+[node name="TextureRect4" type="TextureRect" parent="."]
+layout_mode = 0
+offset_top = -1.92973
+offset_right = 1280.0
+offset_bottom = 719.07
+rotation = -0.0439727
+scale = Vector2(1.0807, 1.0807)
+pivot_offset = Vector2(640, 600)
+texture = ExtResource("8_btlpm")

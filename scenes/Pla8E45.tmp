@@ -1,0 +1,55 @@
+[gd_scene load_steps=11 format=3 uid="uid://2acosorumjiw"]
+
+[ext_resource type="Script" path="res://scripts/minimum_path.gd" id="2_cilq5"]
+[ext_resource type="Script" path="res://scripts/target.gd" id="2_jjhps"]
+[ext_resource type="Script" path="res://scripts/astar.gd" id="4_nybgs"]
+[ext_resource type="PackedScene" uid="uid://dbingj3a1wxfr" path="res://scenes/player.tscn" id="5_7jfa2"]
+[ext_resource type="TileSet" uid="uid://dsv4yka0sywjk" path="res://Tilemap/IceSet.tres" id="5_bprev"]
+[ext_resource type="Script" path="res://scripts/target_framerate.gd" id="7_c8n7a"]
+[ext_resource type="Script" path="res://camera_script.gd" id="8_bbfnp"]
+[ext_resource type="Texture2D" uid="uid://tuq4f30egibh" path="res://transition.png" id="9_01v8s"]
+[ext_resource type="Script" path="res://level_transition.gd" id="10_bucbu"]
+[ext_resource type="Script" path="res://scenes/EnemySpawning.gd" id="10_mw2ft"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Tilemap" type="TileMap" parent="."]
+tile_set = ExtResource("5_bprev")
+format = 2
+script = ExtResource("2_jjhps")
+
+[node name="MinimumPath" type="Node" parent="Tilemap"]
+script = ExtResource("2_cilq5")
+target_tilemap = NodePath("..")
+bounds = Vector2i(10, 30)
+
+[node name="Pathfinding" type="Node2D" parent="Tilemap/MinimumPath"]
+script = ExtResource("4_nybgs")
+
+[node name="Line2D" type="Line2D" parent="Tilemap/MinimumPath/Pathfinding"]
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("7_c8n7a")
+
+[node name="Player" parent="." instance=ExtResource("5_7jfa2")]
+
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("player")]
+position = Vector2(42, 25)
+offset = Vector2(-160, -88)
+anchor_mode = 0
+ignore_rotation = false
+limit_smoothed = true
+script = ExtResource("8_bbfnp")
+player = NodePath("../Player")
+
+[node name="Sprite2D" type="Sprite2D" parent="Camera2D"]
+z_index = 4096
+position = Vector2(0, 2)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("9_01v8s")
+script = ExtResource("10_bucbu")
+
+[node name="EnemySpawning" type="Node2D" parent="."]
+script = ExtResource("10_mw2ft")
+
+[connection signal="initialize" from="Tilemap/MinimumPath/Pathfinding" to="Tilemap/MinimumPath/Pathfinding" method="_on_initialize"]

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://biqonjrktvnf2"]
+
+[ext_resource type="AudioStream" uid="uid://d2yk5jrds5l2d" path="res://audio/music/wizard-music.wav" id="1_q3h4d"]
+[ext_resource type="Script" path="res://scripts/audio_stream_player.gd" id="2_4p6gs"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer"]
+stream = ExtResource("1_q3h4d")
+autoplay = true
+script = ExtResource("2_4p6gs")

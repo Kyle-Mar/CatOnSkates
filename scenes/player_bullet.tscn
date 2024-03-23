@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bv17cfwqidqk"]
 
 [ext_resource type="Script" path="res://scripts/player_bullet.gd" id="1_7rqd4"]
-[ext_resource type="Texture2D" uid="uid://dpvvagax5b745" path="res://sprites/bullet.png" id="2_3shg2"]
+[ext_resource type="Texture2D" uid="uid://dkobljkpf3p1d" path="res://sprites/bullet-player.png" id="2_35blv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wf22a"]
 size = Vector2(14, 14)
@@ -11,7 +11,7 @@ script = ExtResource("1_7rqd4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 rotation = 1.5708
-texture = ExtResource("2_3shg2")
+texture = ExtResource("2_35blv")
 
 [node name="Area2D" type="Area2D" parent="."]
 scale = Vector2(0.5, 0.5)

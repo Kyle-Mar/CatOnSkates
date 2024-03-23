@@ -10,18 +10,17 @@ config_version=5
 
 [application]
 
-config/name="Cat On Skates"
-run/main_scene="res://game.tscn"
+config/name="Meowgic Skater"
+run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.1", "Mobile")
 run/max_fps=60
-config/icon="res://icon.svg"
-config/size/viewport_width=2560
 
 [autoload]
 
 PlayerInfo="*res://scripts/player_info.gd"
-_global="*res://global.gd"
-EventBus="*res://event_bus.gd"
+_global="*res://scripts/global.gd"
+EventBus="*res://scripts/event_bus.gd"
+GlobalAudioStreamPlayer="*res://audio_stream_player.tscn"
 
 [display]
 
